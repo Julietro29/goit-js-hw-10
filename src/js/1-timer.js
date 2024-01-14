@@ -3,7 +3,7 @@ import "flatpickr/dist/flatpickr.min.css";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
-const imputDatePickerRef = document.querySelector('#datetime-picker');
+const inputDatePickerRef = document.querySelector('#datetime-picker');
 const btnStartRef = document.querySelector('[data-start]');
 const daysRef = document.querySelector('[data-days]');
 const hoursRef = document.querySelector('[data-hours]');
@@ -25,18 +25,24 @@ const options = {
 };
 
 btnStartRef.setAttribute('disabled', true);
-flatpickr(imputDatePickerRef, options);
+flatpickr(inputDatePickerRef, options);
 btnStartRef.addEventListener('click', startTimer);
 window.addEventListener('keydown', handleResetTimer);
 
 function handleDateSelection(selectedDate) {
   const currentDate = Date.now();
-  if (selectedDate < currentDate) {
+  if (selectedDate.getTime() < currentDate) {
     btnStartRef.setAttribute('disabled', true);
-    return iziToast.error({ title: 'Error', titleColor: 'white', message: 'Please choose a date in the future',
-  backgroundColor: '#EF4040', messageColor: 'white', position: 'topRight',});
+    return iziToast.error({
+      title: 'Error',
+      titleColor: 'white',
+      message: 'Please choose a date in the future',
+      backgroundColor: '#EF4040',
+      messageColor: 'white',
+      position: 'topRight',
+    });
   }
-  
+
   timeDifference = selectedDate.getTime() - currentDate;
   formatDate = convertMs(timeDifference);
 
@@ -46,26 +52,26 @@ function handleDateSelection(selectedDate) {
 
 function startTimer() {
   btnStartRef.setAttribute('disabled', true);
-  imputDatePickerRef.setAttribute('disabled', true);
+  inputDatePickerRef.setAttribute('disabled', true);
 
-timerId = setInterval(() => {
-  timeDifference -= 1000;
+  timerId = setInterval(() => {
+    timeDifference -= 1000;
 
-  if (timeDifference <= 0) {
-    clearInterval(timerId);
-    updateTimerDisplay(0);
-    iziToast.success({ title: 'Success', message: 'Time end' });
-  } else {
-    formatDate = convertMs(timeDifference);
-    renderDate();
-  }
+    if (timeDifference <= 0) {
+      clearInterval(timerId);
+      updateTimerDisplay(0);
+      iziToast.success({ title: 'Success', message: 'Time end' });
+    } else {
+      formatDate = convertMs(timeDifference);
+      renderDate();
+    }
   }, 1000);
 }
 
 function handleResetTimer(e) {
   if (e.code === 'Escape' && timerId) {
     clearInterval(timerId);
-    imputDatePickerRef.removeAttribute('disabled');
+    inputDatePickerRef.removeAttribute('disabled');
     btnStartRef.setAttribute('disabled', true);
     secondsRef.textContent = '00';
     minutesRef.textContent = '00';
