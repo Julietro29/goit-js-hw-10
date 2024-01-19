@@ -59,7 +59,6 @@ function startTimer() {
 
     if (timeDifference <= 0) {
       clearInterval(timerId);
-      updateTimerDisplay(0);
       iziToast.success({ title: 'Success', message: 'Time end' });
     } else {
       formatDate = convertMs(timeDifference);
